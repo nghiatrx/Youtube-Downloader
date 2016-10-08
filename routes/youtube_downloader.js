@@ -68,9 +68,6 @@ function youtubeHtmlParser(html){
             video.links.push(element);
         }
 
-        console.log(quality.length);
-        console.log(video.links.length);
-
         return video;
     } catch(e){
         return 'error';
