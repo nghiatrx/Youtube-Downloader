@@ -34,20 +34,42 @@ function youtubeHtmlParser(html){
         video.view_count = args.view_count;
         video.img = args.iurlmq.replace(/\\/g, '');
         video.links = [];
+
+        // // get quality list
+        // var streamMaps = args.adaptive_fmts.split(',');
+        // var quality = [];
+        // for(var i = 0, l = streamMaps.length; i < l; i++) {
+        //     var temp = streamMaps[i].split('\u0026');
+        //     var element = {};
+          
+        //     for (var j = 0, l1 = temp.length; j < l1; j++) {
+        //         if (temp[j].indexOf('quality_label=') > -1 && element.quality == null)  {
+        //             quality.push(temp[j].substring('quality_label='.length));
+        //         }
+        //     }
+    
+        // }
+
+        // get video links
+
         var streamMaps = args.url_encoded_fmt_stream_map.split(',');
 
         for(var i = 0, l = streamMaps.length; i < l; i++) {
             var temp = streamMaps[i].split('\u0026');
             var element = {};
+
             for (var j = 0, l1 = temp.length; j < l1; j++) {
-                
                 if (temp[j].indexOf('quality=') > - 1 && element.quality == null) element.quality = temp[j].substring('quality='.length);
                 if (temp[j].indexOf('url=') > - 1 && element.url == null) {
                     element.url = unescape(temp[j].substring('url='.length));
                 }
             }
+
             video.links.push(element);
         }
+
+        console.log(quality.length);
+        console.log(video.links.length);
 
         return video;
     } catch(e){
