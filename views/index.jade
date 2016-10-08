@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+  div#index
+    div#form
+      input.form-control#youtubeUrlInput(placeholder="Youtube URL")
+      button.btn.btn-primary#generateInfo(type="button" onclick="generateInfoClick()") Generate Info
+      img.hidden#imgLoading(src="images/loading.gif")
+    div.hidden#result
+      img.float-left#videoImg(src="http://static.new.tuoitre.vn/tto/i/s626/2016/10/08/1-1475886253.jpg")
+      div.float-left 
+        div#quality
+          label(for="qualitySelect") Quality
+          select.form-control#qualitySelect(onchange="qualitySelectChange()")
+        a#downloadA
+          button.btn.btn-primary#download(type="button") Download
+      div.clear-both
+      textarea#videoInfo(disabled)
+      div#resultHidden
+    div.red-text.hidden#cantGetVideo Can't get video info
+
+
+
