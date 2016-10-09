@@ -1,13 +1,38 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+var cmd=require('node-cmd');
 
 /* GET users listing. */
 router.post('/', function(req, res, next) {
 
     request(req.body.youtubeUrl, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            res.send(youtubeHtmlParser(body));
+
+            var video = youtubeHtmlParser(body);
+
+            if (video == 'error') {
+                 res.send('error');
+                 return;
+            }
+
+            // if URL not containt `signature=`, call Youtube-dl lib
+            if (video.links[0].url.indexOf('signature=') == -1) {
+                video.links = [];
+                cmd.get(
+                    'youtube-dl -f best -g -s ' + req.body.youtubeUrl,
+                    function(url){
+                        var element = {};
+                        element.quality = 'best';
+                        element.url = url;
+                        video.links.push(element);
+                        res.send(video);
+                    }
+                );
+            } else {
+                res.send(video);
+            }
+
         } else {
             res.send('error');
         }
@@ -41,12 +66,14 @@ function youtubeHtmlParser(html){
         // for(var i = 0, l = streamMaps.length; i < l; i++) {
         //     var temp = streamMaps[i].split('\u0026');
         //     var element = {};
-          
+        //     console.log("------------------------------------------------------------------");
         //     for (var j = 0, l1 = temp.length; j < l1; j++) {
+        //         console.log(temp[j]);
         //         if (temp[j].indexOf('quality_label=') > -1 && element.quality == null)  {
         //             quality.push(temp[j].substring('quality_label='.length));
         //         }
         //     }
+        //     console.log("------------------------------------------------------------------");
     
         // }
 
@@ -69,6 +96,8 @@ function youtubeHtmlParser(html){
         }
 
         return video;
+        
+
     } catch(e){
         return 'error';
     }
