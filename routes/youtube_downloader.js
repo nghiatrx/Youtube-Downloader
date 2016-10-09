@@ -3,6 +3,7 @@ var router = express.Router();
 var request = require('request');
 var cmd = require('node-cmd');
 var fs = require('fs');
+var https = require('https');
 
 /* GET users listing. */
 router.post('/', function(req, res, next) {
@@ -21,12 +22,17 @@ router.post('/', function(req, res, next) {
             if (video.links[0].url.indexOf('signature=') == -1) {
                 video.links = [];
                 cmd.get(
-                    'youtube-dl -f best -g -s --call-home ' + req.body.youtubeUrl,
+                    'youtube-dl -f best -g -s ' + req.body.youtubeUrl,
                     function(url){
-                    
-                        video.links.push({'quality': 'best', 'url': url});
-                        res.send(video);
-                   
+                        if (url.indexOf('&gcr=') == -1) {
+                            video.links.push({'quality': 'best', 'url': url});
+                            res.send(video);
+                        } else {
+                            downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
+                                video.links.push({'quality': 'best', 'url': urlDownload});
+                                res.send(video);
+                            });
+                        }
                     }
                 );
             } else {
@@ -40,9 +46,33 @@ router.post('/', function(req, res, next) {
 
 });
 
-function downloadVideo(urlDownload, urlOrigin){
-    fs.readdir('public/video', function(err, files) {
-        console.log(files);
+function getVideoId(videoUrl) {
+    var video_id = videoUrl.split('v=')[1];
+    var ampersandPosition = video_id.indexOf('&');
+    if(ampersandPosition != -1) {
+        video_id = video_id.substring(0, ampersandPosition);
+    }
+    return video_id;
+}
+
+function downloadVideo(urlDownload, videoId, done){
+    fs.readdir('public/videos', function(err, files) {
+        if (files.indexOf(videoId + ".mp4") > -1) {
+            done('/videos/' + videoId + ".mp4");
+        } else {
+            var file = fs.createWriteStream("public/videos/" + videoId + ".mp4");
+            var request = https.get(urlDownload, function(response) {
+                response.pipe(file);
+            });
+
+            file.on('finish', function() {
+                file.close();  // close() is async, call cb after close completes.
+                done('/videos/' + videoId + ".mp4");
+            }).on('error', function(err) { // Handle errors
+                fs.unlink("public/videos/" + videoId + ".mp4"); // Delete the file async. (But we don't check the result)
+            });
+        }
+
     });
 }
 
