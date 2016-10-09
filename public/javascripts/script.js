@@ -4,7 +4,7 @@ function request(url, method, data, done, fail) {
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             if (done != null) done(this.responseText);
-        } else {
+        } else if (this.status >= 400 && this.status <= 599){
             if (fail != null) fail();
         }
     };
