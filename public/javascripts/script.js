@@ -92,10 +92,8 @@ function urlInputKeyPress(event) {
 }
 
 function urlInputPaste() {
-    document.getElementById('imgLoading').className = '';
-    document.getElementById("result").className = "hidden";
     setTimeout(function() {
         document.getElementById("generateInfo").click();
-    }, 300);
+    }, 200);
 
 }
