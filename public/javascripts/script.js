@@ -92,5 +92,8 @@ function urlInputKeyPress(event) {
 }
 
 function urlInputPaste() {
-    document.getElementById("generateInfo").click();
+    setTimeout(function() {
+        document.getElementById("generateInfo").click();
+    }, 300);
+
 }
