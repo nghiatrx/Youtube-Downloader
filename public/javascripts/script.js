@@ -84,3 +84,13 @@ function qualitySelectChange() {
     document.getElementById('downloadA').href = url;
     document.getElementById('downloadA').download = "";
 }
+
+function urlInputKeyPress(event) {
+    if (event.charCode == 13) {
+        document.getElementById("generateInfo").click();
+    }
+}
+
+function urlInputPaste() {
+    document.getElementById("generateInfo").click();
+}
