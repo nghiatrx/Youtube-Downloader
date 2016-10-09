@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
-var cmd=require('node-cmd');
+var cmd = require('node-cmd');
+var fs = require('fs');
 
 /* GET users listing. */
 router.post('/', function(req, res, next) {
@@ -20,13 +21,12 @@ router.post('/', function(req, res, next) {
             if (video.links[0].url.indexOf('signature=') == -1) {
                 video.links = [];
                 cmd.get(
-                    'youtube-dl -f best -g -s ' + req.body.youtubeUrl,
+                    'youtube-dl -f best -g -s --call-home ' + req.body.youtubeUrl,
                     function(url){
-                        var element = {};
-                        element.quality = 'best';
-                        element.url = url;
-                        video.links.push(element);
+                    
+                        video.links.push({'quality': 'best', 'url': url});
                         res.send(video);
+                   
                     }
                 );
             } else {
@@ -39,6 +39,12 @@ router.post('/', function(req, res, next) {
     });
 
 });
+
+function downloadVideo(urlDownload, urlOrigin){
+    fs.readdir('public/video', function(err, files) {
+        console.log(files);
+    });
+}
 
 function youtubeHtmlParser(html){
 
