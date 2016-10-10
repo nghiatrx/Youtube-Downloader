@@ -21,20 +21,17 @@ router.post('/', function(req, res, next) {
             // if URL not containt `signature=`, call Youtube-dl lib
             if (video.links[0].url.indexOf('signature=') == -1) {
                 video.links = [];
-                cmd.get(
-                    'youtube-dl -f best -g -s ' + req.body.youtubeUrl,
-                    function(url){
-                        if (url.indexOf('&gcr=') == -1) {
-                            video.links.push({'quality': 'best', 'url': url});
+                callYoutubeDl(req.body.youtubeUrl, function(url){
+                    if (url.indexOf('&gcr=') == -1) {
+                        video.links.push({'quality': 'best', 'url': url});
+                        res.send(video);
+                    } else {
+                        downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
+                            video.links.push({'quality': 'best', 'url': urlDownload});
                             res.send(video);
-                        } else {
-                            downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
-                                video.links.push({'quality': 'best', 'url': urlDownload});
-                                res.send(video);
-                            });
-                        }
+                        });
                     }
-                );
+                });
             } else {
                 res.send(video);
             }
@@ -45,6 +42,15 @@ router.post('/', function(req, res, next) {
     });
 
 });
+
+function callYoutubeDl(youtubeUrl, callback) {
+    cmd.get(
+        'youtube-dl -f best -g -s ' + req.body.youtubeUrl,
+        function(url){
+            callback(url);
+        }
+    );
+}
 
 function getVideoId(videoUrl) {
     var video_id = videoUrl.split('v=')[1];
@@ -82,11 +88,6 @@ function youtubeHtmlParser(html){
     var rawJson = html.match(/(?=ytplayer.config =).*?(?=;ytplayer.load = function())/);
   
     if (rawJson == null || rawJson[0] == null) {
-        fs.writeFile('helloworld.txt', html, function (err) {
-            if (err) return console.log(err);
-            console.log('Hello World > helloworld.txt');
-        });
-
         return 'error';
     }
 
@@ -140,7 +141,6 @@ function youtubeHtmlParser(html){
         
 
     } catch(e){
-        console.log(e);
         return 'error';
     }
     
