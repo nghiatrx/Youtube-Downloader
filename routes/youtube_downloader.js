@@ -11,16 +11,13 @@ router.post('/', function(req, res, next) {
     request(req.body.youtubeUrl, function (error, response, body) {
         if (!error && response.statusCode == 200) {
 
-            console.log('aaaaaa');
-
             var video = youtubeHtmlParser(body);
 
             if (video == 'error') {
-                 res.send('error');
-                 return;
+                console.log('video == error');
+                res.send('error');
+                return;
             }
-
-            console.log('bbbbbb');
 
             // if URL not containt `signature=`, call Youtube-dl lib
             if (video.links[0].url.indexOf('signature=') == -1) {
