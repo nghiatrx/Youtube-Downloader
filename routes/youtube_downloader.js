@@ -14,7 +14,6 @@ router.post('/', function(req, res, next) {
             var video = youtubeHtmlParser(body);
 
             if (video == 'error') {
-                console.log('video == error');
                 res.send('error');
                 return;
             }
@@ -83,6 +82,8 @@ function youtubeHtmlParser(html){
     var rawJson = html.match(/(?=ytplayer.config =).*?(?=;ytplayer.load = function())/);
   
     if (rawJson == null || rawJson[0] == null) {
+        console.log('rawJson');
+        console.log(rawJson)
         return 'error';
     }
 
