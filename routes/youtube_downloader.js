@@ -23,10 +23,10 @@ router.post('/', function(req, res, next) {
                 video.links = [];
                 callYoutubeDl(req.body.youtubeUrl, function(url){
                     if (url.indexOf('&gcr=') == -1) {
-                        video.links.push({'quality': 'best', 'url': url});
+                        video.links.push({'quality': 'best', 'url': url + '&title=' + video.title});
                         res.send(video);
                     } else {
-                        downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
+                        downloadVideo(url, video.title, function(urlDownload){
                             video.links.push({'quality': 'best', 'url': urlDownload});
                             res.send(video);
                         });
@@ -61,21 +61,21 @@ function getVideoId(videoUrl) {
     return video_id;
 }
 
-function downloadVideo(urlDownload, videoId, done){
+function downloadVideo(urlDownload, videoTitle, done){
     fs.readdir('public/videos', function(err, files) {
-        if (files.indexOf(videoId + ".mp4") > -1) {
-            done('/videos/' + videoId + ".mp4");
+        if (files.indexOf(videoTitle + ".mp4") > -1) {
+            done('/videos/' + videoTitle + ".mp4");
         } else {
-            var file = fs.createWriteStream("public/videos/" + videoId + ".mp4");
+            var file = fs.createWriteStream("public/videos/" + videoTitle + ".mp4");
             var request = https.get(urlDownload, function(response) {
                 response.pipe(file);
             });
 
             file.on('finish', function() {
                 file.close();  // close() is async, call cb after close completes.
-                done('/videos/' + videoId + ".mp4");
+                done('/videos/' + videoTitle + ".mp4");
             }).on('error', function(err) { // Handle errors
-                fs.unlink("public/videos/" + videoId + ".mp4"); // Delete the file async. (But we don't check the result)
+                fs.unlink("public/videos/" + videoTitle + ".mp4"); // Delete the file async. (But we don't check the result)
             });
         }
 
@@ -130,7 +130,7 @@ function youtubeHtmlParser(html){
             for (var j = 0, l1 = temp.length; j < l1; j++) {
                 if (temp[j].indexOf('quality=') > - 1 && element.quality == null) element.quality = temp[j].substring('quality='.length);
                 if (temp[j].indexOf('url=') > - 1 && element.url == null) {
-                    element.url = unescape(temp[j].substring('url='.length));
+                    element.url = unescape(temp[j].substring('url='.length)) + '&title=' + video.title; 
                 }
             }
 

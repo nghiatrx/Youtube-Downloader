@@ -82,7 +82,7 @@ function generateInfoClick() {
 
 function setDownloadA(url, title) {
     var a = document.getElementById('downloadA');
-    a.href = url + '&title=' + title;
+    a.href = url;
     a.download = title;
     a.title = title;
 }
