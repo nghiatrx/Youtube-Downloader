@@ -66,9 +66,8 @@ function generateInfoClick() {
         document.getElementById('qualitySelect').innerHTML = selectHtml;
         document.getElementById('resultHidden').innerHTML = hiddenInputHtml;
 
-        document.getElementById('downloadA').href = links[0].url;
-        document.getElementById('downloadA').download = "";
-
+        setDownloadA(links[0].url, 'aaa.mp4');
+        
         document.getElementById('imgLoading').className = 'hidden';
 
     }, function() {
@@ -78,11 +77,17 @@ function generateInfoClick() {
     });
 }
 
+function setDownloadA(url, title) {
+    var a = document.getElementById('downloadA');
+    a.url = true;
+    a.download = title;
+    a.title = title;
+}
+
 function qualitySelectChange() {
     var quality =  document.getElementById('qualitySelect').value;
     var url = document.getElementById('hiddenLink_' + quality).value;  
-    document.getElementById('downloadA').href = url;
-    document.getElementById('downloadA').download = "";
+    setDownloadA(url, 'aaa.mp4');
 }
 
 function urlInputKeyPress(event) {
