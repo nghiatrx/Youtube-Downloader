@@ -82,7 +82,14 @@ function youtubeHtmlParser(html){
     var rawJson = html.match(/(?=ytplayer.config =).*?(?=;ytplayer.load = function())/);
   
     if (rawJson == null || rawJson[0] == null) {
-        console.log(html)
+        fs.writeFile("/public/aaa.html", html, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The file was saved!");
+        });
+
         return 'error';
     }
 
