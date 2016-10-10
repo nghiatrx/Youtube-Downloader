@@ -18,6 +18,8 @@ router.post('/', function(req, res, next) {
                  return;
             }
 
+            console.log('aaaaaa');
+            
             // if URL not containt `signature=`, call Youtube-dl lib
             if (video.links[0].url.indexOf('signature=') == -1) {
                 video.links = [];
