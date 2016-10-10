@@ -135,6 +135,7 @@ function youtubeHtmlParser(html){
         
 
     } catch(e){
+        console.log(e);
         return 'error';
     }
     
