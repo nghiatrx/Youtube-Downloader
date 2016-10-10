@@ -61,12 +61,15 @@ function generateInfoClick() {
                 qualityDuplicate[links[i].quality]++;
             }
             hiddenInputHtml += '<input type="hidden" id="hiddenLink_' + i + '" value="' +  links[i].url  + '" />';
+            
         }
- 
+        
+        hiddenInputHtml += '<input type="hidden" id="hiddenTitle_' + '" value="' +  obj.title  + '" />';
+
         document.getElementById('qualitySelect').innerHTML = selectHtml;
         document.getElementById('resultHidden').innerHTML = hiddenInputHtml;
 
-        setDownloadA(links[0].url, 'aaa.mp4');
+        setDownloadA(links[0].url, obj.title);
 
         document.getElementById('imgLoading').className = 'hidden';
 
@@ -79,15 +82,16 @@ function generateInfoClick() {
 
 function setDownloadA(url, title) {
     var a = document.getElementById('downloadA');
-    a.href = url;
+    a.href = url + '&title=' + title;
     a.download = title;
     a.title = title;
 }
 
 function qualitySelectChange() {
     var quality =  document.getElementById('qualitySelect').value;
-    var url = document.getElementById('hiddenLink_' + quality).value;  
-    setDownloadA(url, 'aaa.mp4');
+    var url = document.getElementById('hiddenLink_' + quality).value;   
+    var title = document.getElementById('hiddenTitle_').value; 
+    setDownloadA(url, title);
 }
 
 function urlInputKeyPress(event) {
