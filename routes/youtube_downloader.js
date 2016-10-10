@@ -26,7 +26,7 @@ router.post('/', function(req, res, next) {
                         video.links.push({'quality': 'best', 'url': url + '&title=' + video.title});
                         res.send(video);
                     } else {
-                        downloadVideo(url, video.title, function(urlDownload){
+                        downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
                             video.links.push({'quality': 'best', 'url': urlDownload});
                             res.send(video);
                         });
