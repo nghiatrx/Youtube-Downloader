@@ -67,7 +67,7 @@ function generateInfoClick() {
         document.getElementById('resultHidden').innerHTML = hiddenInputHtml;
 
         setDownloadA(links[0].url, 'aaa.mp4');
-        
+
         document.getElementById('imgLoading').className = 'hidden';
 
     }, function() {
@@ -79,7 +79,7 @@ function generateInfoClick() {
 
 function setDownloadA(url, title) {
     var a = document.getElementById('downloadA');
-    a.url = true;
+    a.href = url;
     a.download = title;
     a.title = title;
 }
