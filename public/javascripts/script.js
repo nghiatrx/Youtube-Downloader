@@ -22,7 +22,7 @@ function generateInfoClick() {
 
     document.getElementById("result").className = "hidden";
     var youtubeUrl = document.getElementById('youtubeUrlInput').value;
-    if (youtubeUrl.indexOf('https://www.youtube.com') != 0 && youtubeUrl.indexOf('https://youtube.com') != 0) {
+    if (youtubeUrl.indexOf('youtube.com') != -1) {
         document.getElementById('youtubeUrlInput').className = document.getElementById('youtubeUrlInput').className + " input-invalid";
         isRequesting = false;
         return;
