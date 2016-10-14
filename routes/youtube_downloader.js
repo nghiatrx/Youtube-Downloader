@@ -64,16 +64,15 @@ function getVideoId(videoUrl) {
 function downloadVideo(url, done){
     fs.readdir('public/videos', function(err, files) {
         cmd.get(
-            'youtube-dl ' + url,
+            'youtube-dl -o public/videos/%(title)s-%(id)s.%(ext)s ' + url,
             function(res){
                 var url = '';
                 if (res.indexOf('Destination') > - 1) {
-                    url = 'videos/' + res.match(/(?=Destination\:).*?(?=\n)/)[0].replace('Destination:', '').trim();
+                    url = res.match(/(?=Destination\:).*?(?=\n)/)[0].replace('Destination:', '').trim();
                 } else if (res.indexOf('has already been downloaded') > -1) {
-                    url = 'videos/' + res.match(/(?=\[download\]).*?(?=has already been downloaded)/)[0].replace('[download]', '').trim();
+                    url = res.match(/(?=\[download\]).*?(?=has already been downloaded)/)[0].replace('[download]', '').trim();
                 } 
-                console.log(res);
-                console.log(url);
+                url = url.replace('public', '');
                 done(url);
             }
         );
