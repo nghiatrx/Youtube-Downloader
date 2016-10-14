@@ -1,3 +1,6 @@
 curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 chmod a+rx /usr/local/bin/youtube-dl
 npm install
+
+# Save all videos under Movies directory in your home directory
+echo "-o /root/node/Youtube-Downloader/public/videos" > /etc/youtube-dl.conf

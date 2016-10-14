@@ -26,7 +26,7 @@ router.post('/', function(req, res, next) {
                         video.links.push({'quality': 'best', 'url': url + '&title=' + video.title});
                         res.send(video);
                     } else {
-                        downloadVideo(url, getVideoId(req.body.youtubeUrl), function(urlDownload){
+                        downloadVideo(req.body.youtubeUrl, function(urlDownload){
                             video.links.push({'quality': 'best', 'url': urlDownload});
                             res.send(video);
                         });
@@ -61,23 +61,20 @@ function getVideoId(videoUrl) {
     return video_id;
 }
 
-function downloadVideo(urlDownload, videoTitle, done){
+function downloadVideo(url, done){
     fs.readdir('public/videos', function(err, files) {
-        if (files.indexOf(videoTitle + ".mp4") > -1) {
-            done('/videos/' + videoTitle + ".mp4");
-        } else {
-            var file = fs.createWriteStream("public/videos/" + videoTitle + ".mp4");
-            var request = https.get(urlDownload, function(response) {
-                response.pipe(file);
-            });
-
-            file.on('finish', function() {
-                file.close();  // close() is async, call cb after close completes.
-                done('/videos/' + videoTitle + ".mp4");
-            }).on('error', function(err) { // Handle errors
-                fs.unlink("public/videos/" + videoTitle + ".mp4"); // Delete the file async. (But we don't check the result)
-            });
-        }
+        cmd.get(
+            'youtube-dl ' + url,
+            function(res){
+                var url = '';
+                if (res.indexOf('Destination') > - 1) {
+                    url = 'videos/' + res.match(/(?=Destination\:).*?(?=\n)/)[0].replace('Destination:', '').trim();
+                } else if (res.indexOf('has already been downloaded') > -1) {
+                    url = 'videos/' + res.match(/(?=\[download\]).*?(?=has already been downloaded)/)[0].replace('[download]', '').trim();
+                } 
+                done(url);
+            }
+        );
 
     });
 }
