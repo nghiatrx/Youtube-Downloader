@@ -64,7 +64,7 @@ function getVideoId(videoUrl) {
 function downloadVideo(url, done){
     fs.readdir('public/videos', function(err, files) {
         cmd.get(
-            'youtube-dl -o public/videos/%(title)s-%(id)s.%(ext)s ' + url,
+            'youtube-dl -o "public/videos/%(title)s-%(id)s.%(ext)s" ' + '"' + url + '"',
             function(res){
                 var url = '';
                 if (res.indexOf('Destination') > - 1) {
