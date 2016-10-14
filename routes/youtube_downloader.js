@@ -45,7 +45,7 @@ router.post('/', function(req, res, next) {
 
 function callYoutubeDl(youtubeUrl, callback) {
     cmd.get(
-        'youtube-dl -f best -g -s ' + youtubeUrl,
+        'youtube-dl -g -s ' + youtubeUrl,
         function(url){
             callback(url);
         }
