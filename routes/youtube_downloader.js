@@ -72,6 +72,8 @@ function downloadVideo(url, done){
                 } else if (res.indexOf('has already been downloaded') > -1) {
                     url = 'videos/' + res.match(/(?=\[download\]).*?(?=has already been downloaded)/)[0].replace('[download]', '').trim();
                 } 
+                console.log(res);
+                console.log(url);
                 done(url);
             }
         );
